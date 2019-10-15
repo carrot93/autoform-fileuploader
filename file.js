@@ -22,9 +22,9 @@ const getCollection = name => {
 Template.ksrvFileUploader.onCreated(function(){
   if (!(this.data && this.data.atts)) {
     if (!this.data.atts.collection) {
-      console.warn('Collection not defined')
+      console && console.warn('Collection not defined')
     } else if (typeof this.data.atts.collection !== 'string') {
-      console.warn('Collection must be defined as string')
+      console && console.warn('Collection must be defined as string')
     }
   }
 
@@ -96,6 +96,79 @@ Template.ksrvFileUploaderAddButton.helpers({
     return { type, name, accept }
   }
 })
+
+Template.ksrvFileUploaderPreview.helpers({
+  isImage () {
+    switch (this.extension()){
+      case 'jpg':
+        return 'image';
+      case 'JPG':
+        return 'image';
+      case 'bmp':
+        return 'image';
+      case 'gif':
+        return 'image';
+      case 'mp4':
+        return 'video';
+      case 'avi':
+        return 'video';
+      case 'MOV':
+        return 'video';
+      case 'mp3':
+        return 'audio';
+      case 'wav':
+        return 'audio';
+      case 'ogg':
+        return 'audio';
+      default:
+        return 'other';
+    }
+  }
+
+})
+
+Template.ksrvFileUploaderPreviewVideo.rendered=function(){
+  var vid_obj;
+  if (videojs.players.videoJsPlayer) {
+    videojs.players.videoJsPlayer.dispose();
+  }
+  return vid_obj = _V_("videoJsPlayer", {}, function() {
+    console.log("video is ready.");
+    return true;
+  });
+
+}
+
+Template.ksrvFileUploaderPreviewVideo.destroyed = function () {
+    var mPlayer = vidoejs("#videoJsPlayer");
+    mPlayer.dispose();
+}
+
+Template.ksrvFileUploaderPreviewVideo.helpers({
+  realUrl (){
+    const collection = getCollection('Files')
+    const file = collection.findOne()
+    return file.original.name
+  }
+})
+
+Template.ksrvFileUploaderPreviewAudio.rendered=function(){
+  var $vid_obj;
+  if (videojs.players.audioJsPlayer) {
+    videojs.players.audioJsPlayer.dispose();
+  }
+  return $vid_obj = _V_("audioJsPlayer", {}, function() {
+    console.log("audio is ready.");
+    return true;
+  });
+
+}
+
+Template.ksrvFileUploaderPreviewAudio.destroyed = function () {
+    var mPlayer = vidoejs("#audioJsPlayer");
+    mPlayer.dispose();
+}
+
 
 Template.ksrvFileUploaderPreviewFile.helpers({
   icon () {

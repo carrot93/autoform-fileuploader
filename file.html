@@ -18,9 +18,17 @@
 
 <template name="ksrvFileUploaderPreview">
   <div class="file-uploader-preview">
-    {{#if isImage }}
+    <p>file format: {{isImage}}</p>
+    {{#if $eq isImage 'image'}}
       {{> ksrvFileUploaderPreviewImage }}
-    {{else}}
+    {{/if}}
+    {{#if $eq isImage 'video'}}
+      {{> ksrvFileUploaderPreviewVideo }}
+    {{/if}}
+    {{#if $eq isImage 'audio'}}
+      {{> ksrvFileUploaderPreviewAudio }}
+    {{/if}}
+    {{#if $eq isImage 'other'}}
       {{> ksrvFileUploaderPreviewFile }}
     {{/if}}
     {{> ksrvFileUploaderRemoveButton }}
@@ -33,6 +41,19 @@
   </a>
 </template>
 
+<template name="ksrvFileUploaderPreviewVideo">
+  <hr />
+  <video id="videoJsPlayer" height="200" controls="controls" class="video-js vjs-default-skin" preload="auto">
+    <source src="{{url}}" type={{type}} />
+  </video>
+</template>
+
+<template name="ksrvFileUploaderPreviewAudio">
+  <audio id="audioJsPlayer" controls="controls" preload="auto" autoplay>
+    <source src="{{url}}" type={{type}}/>
+  </audio>
+</template>
+
 <template name="ksrvFileUploaderPreviewFile">
   <a href="{{ url }}" target="_blank">
     <i class="fa fa-3x fa-{{ icon }}"></i>
@@ -41,7 +62,13 @@
 
 <template name="ksrvFileUploaderProgressBar">
   <div class="progress">
-    <div class="progress-bar" role="progressbar" aria-valuenow="{{uploadProgress}}" aria-valuemin="0" aria-valuemax="100" style="width: {{uploadProgress}}%;">
+    <div
+      class="progress-bar"
+      role="progressbar"
+      aria-valuenow="{{uploadProgress}}"
+      aria-valuemin="0"
+      aria-valuemax="100"
+      style="width: {{uploadProgress}}%;">
       {{uploadProgress}}%
     </div>
   </div>
@@ -50,14 +77,24 @@
 <!-- @see https://habrahabr.ru/post/189570/ -->
 <template name="ksrvFileUploaderAddButton">
   <label class="file-uploader-addlabel">
-    <span class="btn btn-default {{atts.addButtonClass}}"><i class="fa fa-plus"></i>{{#if atts.addButtonLabel }} {{ atts.addButtonLabel }}{{ else }}Выбрать файл{{/if}}</span>
+    <span class="btn btn-default {{atts.addButtonClass}}">
+      <i class="fa fa-plus"></i>
+      {{#if atts.addButtonLabel }}
+        {{ atts.addButtonLabel }}
+      {{ else }}
+        Выбрать файл
+      {{/if}}
+    </span>
     <input {{attr}} />
   </label>
 </template>
 
 <template name="ksrvFileUploaderRemoveButton">
   <button class="btn btn-danger" type="button" name="remove">
-    <i class="fa fa-times"></i>
-    {{#if atts.removeButtonLabel }}{{ atts.removeButtonLabel }}{{/if}}
+    {{#if atts.removeButtonLabel }}
+      {{{ atts.removeButtonLabel }}}
+    {{else}}
+      &times;
+    {{/if}}
   </button>
 </template>
